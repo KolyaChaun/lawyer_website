@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Адвокатські Запити Онлайн | Головна</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700;900&family=Manrope:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', path='css/styles.css') }}">
+    <link rel="icon" href="{{ url_for('static', path='favicon.ico') }}?v=1" type="image/x-icon">
+    <link rel="shortcut icon" href="{{ url_for('static', path='favicon.ico') }}?v=1" type="image/x-icon">
+    <style>
+        /* Secondary Button (Замовити консультацію) - Exact same as cta-button, just narrower */
+        .cta-secondary {
+            display: inline-block;
+            padding: 1.2rem 2rem;  /* Less horizontal padding to make it narrower */
+            background: var(--gold);
+            color: var(--navy);
+            text-decoration: none;
+            font-weight: 700;
+            font-size: 1.1rem;
+            border-radius: 50px;  /* Same rounded style as cta-button */
+            transition: all 0.3s ease;
+            box-shadow: 0 10px 30px rgba(212, 175, 55, 0.3);
+            margin-top: 1rem;
+        }
+
+        .cta-secondary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 40px rgba(212, 175, 55, 0.4);
+            background: #E5C248;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav>
+        <div class="nav-container">
+            <a href="/" class="logo">Адвокатський<span>Запит</span></a>
+            <ul class="nav-links">
+                <li><a href="/">Головна</a></li>
+                <li><a href="/form">Подати запит</a></li>
+                <li><a href="/contact">Контакти</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="hero-content">
+            <div class="hero-text">
+                <h1>Професійні <span>Адвокатські Запити</span> За Лічені Хвилини</h1>
+                <p>Швидке та ефективне складання адвокатських запитів онлайн. Захистіть свої права з допомогою професіоналів.</p>
+                <a href="/form" class="cta-button">Подати запит зараз</a>
+                <br>
+                <a href="/contact" class="cta-secondary">Замовити консультацію</a>
+            </div>
+            <div class="hero-features">
+                <div class="feature-card">
+                    <h3>⚡ Швидко</h3>
+                    <p>Заповніть форму за 5 хвилин та отримайте готовий запит</p>
+                </div>
+                <div class="feature-card">
+                    <h3>🛡️ Надійно</h3>
+                    <p>Всі запити складаються відповідно до чинного законодавства</p>
+                </div>
+                <div class="feature-card">
+                    <h3>💼 Професійно</h3>
+                    <p>Досвідчені адвокати з багаторічною практикою</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Services Section -->
+    <section class="services">
+        <div class="section-title">
+            <h2>Наші Послуги</h2>
+            <p>Комплексна юридична підтримка для захисту ваших інтересів</p>
+        </div>
+        <div class="services-grid">
+            <div class="service-item">
+                <div class="service-icon">📋</div>
+                <h3>Адвокатські запити</h3>
+                <p>Професійне складання запитів до державних органів, підприємств та установ</p>
+            </div>
+            <div class="service-item">
+                <div class="service-icon">🔍</div>
+                <h3>Збір інформації</h3>
+                <p>Отримання необхідних документів та відомостей для вашої справи</p>
+            </div>
+            <div class="service-item">
+                <div class="service-icon">⚖️</div>
+                <h3>Юридичний супровід</h3>
+                <p>Повний супровід вашої справи від початку до завершення</p>
+            </div>
+            <div class="service-item">
+                <div class="service-icon">📄</div>
+                <h3>Документи</h3>
+                <p>Підготовка всіх необхідних документів для судового процесу</p>
+            </div>
+            <div class="service-item">
+                <div class="service-icon">💬</div>
+                <h3>Консультації</h3>
+                <p>Кваліфіковані консультації з будь-яких правових питань</p>
+            </div>
+            <div class="service-item">
+                <div class="service-icon">🎯</div>
+                <h3>Представництво</h3>
+                <p>Захист ваших інтересів у судових та державних установах</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- How it Works -->
+    <section class="how-it-works">
+        <div class="steps-container">
+            <div class="section-title">
+                <h2>Як Це Працює</h2>
+                <p>Простий процес від заявки до результату</p>
+            </div>
+            <div class="steps-grid">
+                <div class="step">
+                    <div class="step-number">1</div>
+                    <h3>Заповніть форму</h3>
+                    <p>Вкажіть всю необхідну інформацію про ваш запит</p>
+                </div>
+                <div class="step">
+                    <div class="step-number">2</div>
+                    <h3>Опрацювання</h3>
+                    <p>Наші юристи аналізують вашу заявку протягом 24 годин</p>
+                </div>
+                <div class="step">
+                    <div class="step-number">3</div>
+                    <h3>Підготовка</h3>
+                    <p>Складаємо професійний адвокатський запит</p>
+                </div>
+                <div class="step">
+                    <div class="step-number">4</div>
+                    <h3>Відправка</h3>
+                    <p>Надсилаємо запит до відповідної установи</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+    <div class="footer-content">
+        <div class="footer-logo">Адвокатський<span>Запит</span></div>
+        <p style="margin: 1rem 0;">Професійні юридичні послуги онлайн</p>
+        <div class="footer-text">
+            <p>© 2026 АдвокатськийЗапит. Всі права захищені.</p>
+            <p style="margin-top: 0.5rem;">
+                м. Одеса |
+                <a href="tel:+380972246754" style="color: inherit; text-decoration: none;">+380 (97) 224-67-54</a> |
+                <a href="mailto:Nasaraya98@gmail.com" style="color: inherit; text-decoration: none;">Nasaraya98@gmail.com</a> |
+                <a href="https://t.me/nasaraya13" target="_blank" style="color: inherit; text-decoration: none;">📱 Telegram</a>
+            </p>
+        </div>
+    </div>
+</footer>
+</body>
+</html>

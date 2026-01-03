@@ -1,0 +1,1012 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Подати Судову Заяву | Адвокатські Запити</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700;900&family=Manrope:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', path='css/styles.css') }}">
+    <link rel="icon" href="{{ url_for('static', path='favicon.ico') }}?v=1" type="image/x-icon">
+    <link rel="shortcut icon" href="{{ url_for('static', path='favicon.ico') }}?v=1" type="image/x-icon">
+    <style>
+        .progress-bar {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 3rem;
+            position: relative;
+            padding: 0 20px;
+        }
+
+        .progress-bar::before {
+            content: '';
+            position: absolute;
+            top: 20px;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: var(--light-gray);
+            z-index: 0;
+        }
+
+        .progress-line {
+            position: absolute;
+            top: 20px;
+            left: 0;
+            height: 2px;
+            background: var(--gold);
+            transition: width 0.3s ease;
+            z-index: 1;
+        }
+
+        .step-indicator {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            position: relative;
+            z-index: 2;
+            flex: 1;
+        }
+
+        .step-number {
+            width: 42px;
+            height: 42px;
+            border-radius: 50%;
+            background: var(--white);
+            border: 2px solid var(--light-gray);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            color: var(--gray);
+            margin-bottom: 0.5rem;
+            transition: all 0.3s ease;
+        }
+
+        .step-indicator.active .step-number {
+            background: var(--gold);
+            border-color: var(--gold);
+            color: var(--navy);
+        }
+
+        .step-indicator.completed .step-number {
+            background: var(--deep-blue);
+            border-color: var(--deep-blue);
+            color: var(--white);
+        }
+
+        .step-label {
+            font-size: 0.85rem;
+            color: var(--gray);
+            text-align: center;
+            max-width: 120px;
+        }
+
+        .step-indicator.active .step-label {
+            color: var(--navy);
+            font-weight: 600;
+        }
+
+        .step-content {
+            display: none;
+        }
+
+        .step-content.active {
+            display: block;
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .step-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 2rem;
+            color: var(--navy);
+            margin-bottom: 2rem;
+        }
+
+        .radio-group {
+            display: flex;
+            gap: 2rem;
+            margin-top: 0.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .radio-option {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            cursor: pointer;
+        }
+
+        .radio-option input[type="radio"] {
+            width: 20px;
+            height: 20px;
+            cursor: pointer;
+        }
+
+        .info-box {
+            background: var(--cream);
+            padding: 1.2rem;
+            border-radius: 10px;
+            border-left: 4px solid var(--gold);
+            margin: 1.5rem 0;
+            font-size: 0.9rem;
+            color: var(--gray);
+        }
+
+        .preview-section {
+            background: var(--cream);
+            padding: 1.5rem;
+            border-radius: 15px;
+            margin-bottom: 1.5rem;
+            border-left: 4px solid var(--gold);
+        }
+
+        .preview-section h3 {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.3rem;
+            color: var(--navy);
+            margin-bottom: 1rem;
+        }
+
+        .preview-item {
+            display: grid;
+            grid-template-columns: 200px 1fr;
+            gap: 1rem;
+            padding: 0.5rem 0;
+            border-bottom: 1px solid var(--light-gray);
+        }
+
+        .preview-item:last-child {
+            border-bottom: none;
+        }
+
+        .preview-label {
+            font-weight: 600;
+            color: var(--gray);
+        }
+
+        .preview-value {
+            color: var(--navy);
+        }
+
+        .text-editor {
+            width: 100%;
+            min-height: 300px;
+            padding: 1rem;
+            border: 2px solid var(--light-gray);
+            border-radius: 12px;
+            font-family: 'Manrope', sans-serif;
+            font-size: 1rem;
+            line-height: 1.6;
+            background: var(--cream);
+            resize: vertical;
+        }
+
+        .text-editor:focus {
+            outline: none;
+            border-color: var(--gold);
+            background: var(--white);
+            box-shadow: 0 0 0 4px rgba(212, 175, 55, 0.1);
+        }
+
+        /* PDF Preview Styles */
+        .pdf-preview-container {
+            margin-top: 2rem;
+            animation: slideUp 0.5s ease;
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .pdf-header {
+            background: linear-gradient(135deg, var(--navy) 0%, var(--deep-blue) 100%);
+            padding: 2rem;
+            border-radius: 20px 20px 0 0;
+            color: var(--white);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .pdf-header-left {
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+        }
+
+        .pdf-icon {
+            width: 50px;
+            height: 50px;
+            background: var(--gold);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: var(--navy);
+            box-shadow: 0 4px 12px rgba(212, 175, 55, 0.3);
+        }
+
+        .pdf-title-section h3 {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.5rem;
+            margin: 0 0 0.3rem 0;
+            color: var(--white);
+        }
+
+        .pdf-subtitle {
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 0.9rem;
+        }
+
+        .pdf-viewer-wrapper {
+            background: #f5f5f5;
+            border-radius: 0 0 20px 20px;
+            padding: 2rem;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+        }
+
+        .pdf-frame {
+            width: 100%;
+            height: 80vh;
+            border: none;
+            border-radius: 12px;
+            background: var(--white);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+        }
+
+        .success-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: rgba(16, 185, 129, 0.1);
+            color: #10b981;
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 0.85rem;
+            margin-bottom: 1rem;
+            animation: bounceIn 0.5s ease;
+        }
+
+        @keyframes bounceIn {
+            0% { transform: scale(0.3); opacity: 0; }
+            50% { transform: scale(1.05); }
+            70% { transform: scale(0.9); }
+            100% { transform: scale(1); opacity: 1; }
+        }
+
+        .loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(5px);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+        }
+
+        .loading-overlay.active {
+            display: flex;
+        }
+
+        .loading-content {
+            background: var(--white);
+            padding: 3rem;
+            border-radius: 20px;
+            text-align: center;
+            max-width: 400px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        }
+
+        .loading-spinner {
+            width: 60px;
+            height: 60px;
+            border: 4px solid var(--light-gray);
+            border-top-color: var(--gold);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 1.5rem;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .loading-text {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.3rem;
+            color: var(--navy);
+            margin-bottom: 0.5rem;
+        }
+
+        .loading-subtext {
+            color: var(--gray);
+            font-size: 0.9rem;
+        }
+
+        /* Agreement Section Styles */
+        .agreement-section {
+            margin-top: 2rem;
+            padding: 0 2rem;
+        }
+
+        .agreement-box {
+            background: var(--cream);
+            padding: 1.5rem;
+            border-radius: 12px;
+            border-left: 4px solid var(--gold);
+        }
+
+        .agreement-checkbox {
+            display: flex;
+            align-items: flex-start;
+            gap: 1rem;
+            cursor: pointer;
+            font-size: 1rem;
+            line-height: 1.6;
+        }
+
+        .agreement-checkbox input[type="checkbox"] {
+            width: 24px;
+            height: 24px;
+            cursor: pointer;
+            margin-top: 2px;
+            flex-shrink: 0;
+        }
+
+        .agreement-checkbox span {
+            color: var(--navy);
+        }
+
+        .agreement-checkbox a {
+            color: var(--gold);
+            text-decoration: underline;
+            font-weight: 600;
+        }
+
+        .agreement-checkbox a:hover {
+            color: var(--deep-blue);
+        }
+
+        /* Disabled button state */
+        .submit-button:disabled {
+            cursor: not-allowed !important;
+            pointer-events: auto !important;
+            opacity: 0.6;
+        }
+
+        /* Agreement error state */
+        .agreement-box.error {
+            border-left-color: #ef4444;
+            background: #fee;
+            animation: shake 0.5s;
+        }
+
+        .agreement-checkbox.error {
+            color: #ef4444;
+        }
+
+        .agreement-checkbox.error input[type="checkbox"] {
+            border: 2px solid #ef4444;
+            outline: 2px solid #ef4444;
+        }
+
+        .error-message {
+            color: #ef4444;
+            font-size: 0.9rem;
+            margin-top: 0.5rem;
+            font-weight: 600;
+            display: none;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .error-message.show {
+            display: block;
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            10%, 30%, 50%, 70%, 90% { transform: translateX(-5px); }
+            20%, 40%, 60%, 80% { transform: translateX(5px); }
+        }
+
+        @media (max-width: 768px) {
+            .progress-bar {
+                flex-wrap: wrap;
+                gap: 1rem;
+            }
+            .step-indicator {
+                flex: 0 0 calc(20% - 1rem);
+            }
+            .step-label {
+                font-size: 0.65rem;
+            }
+            .preview-item {
+                grid-template-columns: 1fr;
+                gap: 0.3rem;
+            }
+            .pdf-header {
+                flex-direction: column;
+                gap: 1.5rem;
+                text-align: center;
+            }
+            .pdf-viewer-wrapper {
+                padding: 1rem;
+            }
+            .pdf-frame {
+                height: 60vh;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Loading Overlay -->
+    <div class="loading-overlay" id="loadingOverlay">
+        <div class="loading-content">
+            <div class="loading-spinner"></div>
+            <div class="loading-text">Формування документа</div>
+            <div class="loading-subtext">Будь ласка, зачекайте...</div>
+        </div>
+    </div>
+
+    <nav>
+        <div class="nav-container">
+            <a href="/" class="logo">Адвокатський<span>Запит</span></a>
+            <ul class="nav-links">
+                <li><a href="/">Головна</a></li>
+                <li><a href="/form">Подати запит</a></li>
+                <li><a href="/contact">Контакти</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <div class="form-page">
+        <div class="progress-bar">
+            <div class="progress-line" id="progressLine"></div>
+            <div class="step-indicator active" data-step="1">
+                <div class="step-number">1</div>
+                <div class="step-label">Орган</div>
+            </div>
+            <div class="step-indicator" data-step="2">
+                <div class="step-number">2</div>
+                <div class="step-label">Клієнт</div>
+            </div>
+            <div class="step-indicator" data-step="3">
+                <div class="step-number">3</div>
+                <div class="step-label">Текст запиту</div>
+            </div>
+            <div class="step-indicator" data-step="4">
+                <div class="step-number">4</div>
+                <div class="step-label">Перевірка</div>
+            </div>
+            <div class="step-indicator" data-step="5">
+                <div class="step-number">5</div>
+                <div class="step-label">Документ</div>
+            </div>
+        </div>
+
+        <!-- Крок 1: Орган -->
+        <div class="step-content active" data-step="1">
+            <h2 class="step-title">Орган або юридична особа</h2>
+
+            <div class="form-group">
+                <label>Назва органу або юридичної особи <span class="required">*</span></label>
+                <input type="text" id="organizationName" placeholder="Наприклад, Державна податкова служба" required>
+            </div>
+
+            <div class="form-group">
+                <label>Адреса органу або юридичної особи <span class="required">*</span></label>
+                <input type="text" id="organizationAddress" placeholder="м. Київ, вул. Хрещатик, 1" required>
+            </div>
+
+            <div class="form-group">
+                <label>Код ЄДРПОУ <span class="required">*</span></label>
+                <input type="text" id="organizationEDRPOU" placeholder="12345678" required>
+                <small style="color: var(--gray); font-size: 0.85rem;">8 цифр</small>
+            </div>
+
+            <div class="form-group">
+                <label>Телефон або електронна пошта органу/юридичної особи <span class="required">*</span></label>
+                <input type="text" id="organizationContact" placeholder="+380123456789 або info@example.com" required>
+            </div>
+
+            <div class="info-box">
+                * - заповнювати обов'язково
+            </div>
+        </div>
+
+        <!-- Крок 2: Заявник -->
+        <div class="step-content" data-step="2">
+            <h2 class="step-title">Клієнт</h2>
+
+            <div class="form-group">
+                <label>Реєстраційний номер облікової картки платника податків (раніше ІПН)</label>
+                <input type="text" id="taxNumber" placeholder="1234500671" required>
+                <small style="color: var(--gray); font-size: 0.85rem;">РНОКПП має складатися з 10 цифр (серія номер паспорта або номер ID картки, у разі відсутності)</small>
+            </div>
+
+            <div class="form-group">
+                <label>Прізвище, ім'я та по батькові <span class="required">*</span></label>
+                <input type="text" id="fullName" placeholder="Коваленко Микола Петрович" required>
+            </div>
+
+            <div class="form-group">
+                <label>Адреса проживання/перебування/місцезнаходження <span class="required">*</span></label>
+                <input type="text" id="address" placeholder="м. Київ, вул. Хрещатик, 10" required>
+                <small style="color: var(--gray); font-size: 0.85rem;">Введіть область, район, місто (село, селище), вул (бульв. проспт, узвіз тощо), буд, кв, поштовий індекс</small>
+            </div>
+
+            <div class="form-group">
+                <label>Контактний номер телефону <span class="required">*</span></label>
+                <input type="tel" id="phone" placeholder="+380123456789" required>
+                <small style="color: var(--gray); font-size: 0.85rem;">Номер у форматі +380XXXXXXXXX</small>
+            </div>
+
+            <div class="form-group">
+                <label>Електронна пошта <span class="required">*</span></label>
+                <input type="email" id="email" placeholder="info@example.com" required>
+                <small style="color: var(--gray); font-size: 0.85rem;">Електронна адреса має бути у форматі info@example.com"</small>
+            </div>
+
+            <div class="info-box">
+                * - заповновувати обов'язково
+            </div>
+        </div>
+
+        <!-- Крок 3: Текст заяви -->
+        <div class="step-content" data-step="3">
+            <h2 class="step-title">Текст запиту</h2>
+
+            <div class="info-box">
+                Фактичні підстави звернення з адвокатським запитом
+            </div>
+
+            <div class="form-group">
+                <label>Текст запиту</label>
+                <textarea class="text-editor" id="claimText" placeholder="Введіть текст вашого запиту..."></textarea>
+            </div>
+
+            <div class="form-group">
+                <label>Інформація та/або документи які необхідно отримати</label>
+                <textarea class="text-editor" id="documentsRequested" placeholder="Вкажіть яку інформацію та/або документи необхідно отримати..."></textarea>
+            </div>
+        </div>
+
+        <!-- Крок 4: Перевірка -->
+        <div class="step-content" data-step="4">
+            <h2 class="step-title">Перегляд та підтвердження</h2>
+
+            <div class="info-box">
+                Дані автоматично збережено. Ви можете повернутись до створення документу в будь-який момент.
+            </div>
+
+            <div class="preview-section">
+                <h3>Орган або юридична особа</h3>
+                <div class="preview-item">
+                    <div class="preview-label">Назва:</div>
+                    <div class="preview-value" id="preview-organizationName"></div>
+                </div>
+                <div class="preview-item">
+                    <div class="preview-label">Адреса:</div>
+                    <div class="preview-value" id="preview-organizationAddress"></div>
+                </div>
+                <div class="preview-item">
+                    <div class="preview-label">Код ЄДРПОУ:</div>
+                    <div class="preview-value" id="preview-organizationEDRPOU"></div>
+                </div>
+                <div class="preview-item">
+                    <div class="preview-label">Контакт:</div>
+                    <div class="preview-value" id="preview-organizationContact"></div>
+                </div>
+            </div>
+
+            <div class="preview-section">
+                <h3>Клієнт</h3>
+                <div class="preview-item">
+                    <div class="preview-label">Тип особи:</div>
+                    <div class="preview-value" id="preview-applicantType"></div>
+                </div>
+                <div class="preview-item">
+                    <div class="preview-label">ІПН:</div>
+                    <div class="preview-value" id="preview-taxNumber"></div>
+                </div>
+                <div class="preview-item">
+                    <div class="preview-label">ПІБ:</div>
+                    <div class="preview-value" id="preview-fullName"></div>
+                </div>
+                <div class="preview-item">
+                    <div class="preview-label">Адреса:</div>
+                    <div class="preview-value" id="preview-address"></div>
+                </div>
+                <div class="preview-item">
+                    <div class="preview-label">Телефон:</div>
+                    <div class="preview-value" id="preview-phone"></div>
+                </div>
+                <div class="preview-item">
+                    <div class="preview-label">Email:</div>
+                    <div class="preview-value" id="preview-email"></div>
+                </div>
+            </div>
+
+            <div class="preview-section">
+                <h3>Текст запиту</h3>
+                <div style="white-space: pre-wrap; line-height: 1.6; margin-bottom: 1rem;" id="preview-claimText"></div>
+            </div>
+
+            <div class="preview-section">
+                <h3>Інформація та/або документи які необхідно отримати</h3>
+                <div style="white-space: pre-wrap; line-height: 1.6;" id="preview-documentsRequested"></div>
+            </div>
+        </div>
+
+        <!-- Крок 5: PDF Preview -->
+        <div class="step-content" data-step="5">
+            <div class="pdf-preview-container" id="pdfPreview">
+                <div class="success-badge">
+                    <span>✓</span> Документ успішно сформовано
+                </div>
+
+                <div class="pdf-header">
+                    <div class="pdf-header-left">
+                        <div class="pdf-icon">📄</div>
+                        <div class="pdf-title-section">
+                            <h3>Адвокатський запит</h3>
+                            <div class="pdf-subtitle">Готово до перегляду</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="pdf-viewer-wrapper">
+                    <iframe class="pdf-frame" id="pdfFrame"></iframe>
+                </div>
+
+                <!-- Agreement Section -->
+                <div class="agreement-section">
+                    <div class="agreement-box" id="agreementBox">
+                        <label class="agreement-checkbox" id="agreementLabel">
+                            <input type="checkbox" id="agreementCheckbox">
+                            <span>Я ознайомився та згоден з <a href="/contract" target="_blank">умовами публічного договору на надання правничої допомоги</a></span>
+                        </label>
+                        <div class="error-message" id="agreementError">
+                            ⚠️ Для продовження оплати необхідно прийняти умови договору
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Кнопки навігації -->
+        <div class="button-group">
+            <button class="submit-button" id="prevBtn" style="display: none; background: var(--light-gray); color: var(--navy);">ПОВЕРНУТИСЬ</button>
+            <button class="submit-button" id="nextBtn">НАСТУПНИЙ КРОК</button>
+            <button class="submit-button" id="submitBtn" style="display: none; background: var(--gold); color: var(--navy);">СФОРМУВАТИ ЗАПИТ</button>
+        </div>
+    </div>
+
+    <footer>
+    <div class="footer-content">
+        <div class="footer-logo">Адвокатський<span>Запит</span></div>
+        <p style="margin: 1rem 0;">Професійні юридичні послуги онлайн</p>
+        <div class="footer-text">
+            <p>© 2026 АдвокатськийЗапит. Всі права захищені.</p>
+            <p style="margin-top: 0.5rem;">
+                м. Одеса |
+                <a href="tel:+380972246754" style="color: inherit; text-decoration: none;">+380 (97) 224-67-54</a> |
+                <a href="mailto:Nasaraya98@gmail.com" style="color: inherit; text-decoration: none;">Nasaraya98@gmail.com</a> |
+                <a href="https://t.me/nasaraya13" target="_blank" style="color: inherit; text-decoration: none;">📱 Telegram</a>
+            </p>
+        </div>
+    </div>
+</footer>
+
+    <script>
+let currentStep = 1;
+const totalSteps = 5;
+const formData = {};
+let currentPdfUrl = '';
+let orderId = null;
+
+const regexPatterns = {
+    phone: /^\+380\d{9}$/,
+    email: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
+    edrpou: /^\d{8}$/,
+    taxNumber: /^\d{10}$/
+};
+
+function showError(input, message) {
+    let errorEl = input.parentNode.querySelector('.error-message');
+    if (!errorEl) {
+        errorEl = document.createElement('div');
+        errorEl.className = 'error-message';
+        input.parentNode.appendChild(errorEl);
+    }
+    errorEl.textContent = message;
+    errorEl.classList.add('show');
+    input.style.borderColor = '#ef4444';
+}
+
+function clearError(input) {
+    const errorEl = input.parentNode.querySelector('.error-message');
+    if (errorEl) {
+        errorEl.classList.remove('show');
+        errorEl.textContent = '';
+    }
+    input.style.borderColor = '';
+}
+
+function validateField(input) {
+    clearError(input);
+    const val = input.value.trim();
+    let valid = true;
+
+    if (input.hasAttribute('required') && !val) {
+        showError(input, 'Це поле обов\'язкове');
+        valid = false;
+    } else if (val) {
+        switch(input.id) {
+            case 'organizationEDRPOU':
+                if (!regexPatterns.edrpou.test(val)) {
+                    showError(input, 'Код ЄДРПОУ повинен містити 8 цифр');
+                    valid = false;
+                }
+                break;
+            case 'organizationContact':
+                const isPhone = regexPatterns.phone.test(val);
+                const isEmail = regexPatterns.email.test(val);
+                if (!isPhone && !isEmail) {
+                    showError(input, 'Введіть телефон у форматі +380XXXXXXXXX або коректну електронну пошту');
+                    valid = false;
+                }
+                break;
+            case 'phone':
+                if (!regexPatterns.phone.test(val)) {
+                    showError(input, 'Контактний номер телефону має бути у форматі +380XXXXXXXXX');
+                    valid = false;
+                }
+                break;
+            case 'email':
+                if (!regexPatterns.email.test(val)) {
+                    showError(input, 'Введіть коректну електронну пошту');
+                    valid = false;
+                }
+                break;
+            case 'taxNumber':
+                if (!regexPatterns.taxNumber.test(val)) {
+                    showError(input, 'РНОКПП (ІПН) має складатися з 10 цифр');
+                    valid = false;
+                }
+                break;
+            default:
+                break;
+        }
+    }
+
+    return valid;
+}
+
+function validateStep() {
+    const inputs = document.querySelectorAll(`.step-content[data-step="${currentStep}"] input, .step-content[data-step="${currentStep}"] select, .step-content[data-step="${currentStep}"] textarea`);
+    let isValid = true;
+    inputs.forEach(input => {
+        if (!validateField(input)) isValid = false;
+    });
+    return isValid;
+}
+
+document.addEventListener('input', (e) => {
+    const input = e.target;
+    if (!input) return;
+    validateField(input);
+});
+
+
+function startLiqPayPayment(orderId) {
+    const form = document.createElement('form');
+    form.method = 'POST';
+    form.action = '/liqpay/pay';
+    const input = document.createElement('input');
+    input.type = 'hidden';
+    input.name = 'order_id';
+    input.value = orderId;
+    form.appendChild(input);
+    document.body.appendChild(form);
+    form.submit();
+}
+
+function updateProgress() {
+    const progressLine = document.getElementById('progressLine');
+    const percentage = ((currentStep - 1) / (totalSteps - 1)) * 100;
+    progressLine.style.width = percentage + '%';
+
+    document.querySelectorAll('.step-indicator').forEach((indicator, index) => {
+        const stepNum = index + 1;
+        indicator.classList.remove('active', 'completed');
+        if (stepNum < currentStep) indicator.classList.add('completed');
+        else if (stepNum === currentStep) indicator.classList.add('active');
+    });
+
+    document.querySelectorAll('.step-content').forEach(content => content.classList.remove('active'));
+    document.querySelector(`.step-content[data-step="${currentStep}"]`).classList.add('active');
+
+    const prevBtn = document.getElementById('prevBtn');
+    const nextBtn = document.getElementById('nextBtn');
+    const submitBtn = document.getElementById('submitBtn');
+
+    prevBtn.style.display = currentStep === 1 ? 'none' : 'block';
+
+    if (currentStep === 4) {
+        nextBtn.style.display = 'none';
+        submitBtn.style.display = 'block';
+        submitBtn.textContent = 'СФОРМУВАТИ ЗАПИТ';
+        submitBtn.style.background = 'var(--gold)';
+        submitBtn.style.color = 'var(--navy)';
+        updatePreview();
+    } else if (currentStep === 5) {
+        nextBtn.style.display = 'none';
+        submitBtn.style.display = 'block';
+        submitBtn.textContent = 'ОПЛАТИТИ';
+        submitBtn.style.background = 'var(--light-gray)';
+        submitBtn.style.color = 'var(--gray)';
+        submitBtn.disabled = true;
+    } else {
+        nextBtn.style.display = 'block';
+        submitBtn.style.display = 'none';
+    }
+}
+
+function saveStepData() {
+    const inputs = document.querySelectorAll(`.step-content[data-step="${currentStep}"] input, .step-content[data-step="${currentStep}"] select, .step-content[data-step="${currentStep}"] textarea`);
+    inputs.forEach(input => {
+        if (input.id) formData[input.id] = input.value;
+        if (input.name === 'applicantType' && input.checked) formData.applicantType = input.value;
+    });
+}
+
+function updatePreview() {
+    document.getElementById('preview-organizationName').textContent = formData.organizationName || '-';
+    document.getElementById('preview-organizationAddress').textContent = formData.organizationAddress || '-';
+    document.getElementById('preview-organizationEDRPOU').textContent = formData.organizationEDRPOU || '-';
+    document.getElementById('preview-organizationContact').textContent = formData.organizationContact || '-';
+
+    const applicantType = formData.applicantType === 'physical' ? 'Фізична особа' : 'Юридична особа';
+    document.getElementById('preview-applicantType').textContent = applicantType;
+    document.getElementById('preview-taxNumber').textContent = formData.taxNumber || '-';
+    document.getElementById('preview-fullName').textContent = formData.fullName || '-';
+    document.getElementById('preview-address').textContent = formData.address || '-';
+    document.getElementById('preview-phone').textContent = formData.phone || '-';
+    document.getElementById('preview-email').textContent = formData.email || '-';
+
+    document.getElementById('preview-claimText').textContent = formData.claimText || '-';
+    document.getElementById('preview-documentsRequested').textContent = formData.documentsRequested || '-';
+}
+
+document.getElementById('nextBtn').addEventListener('click', () => {
+    if (validateStep()) {
+        saveStepData();
+        if (currentStep < totalSteps) {
+            currentStep++;
+            updateProgress();
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+    }
+});
+
+document.getElementById('prevBtn').addEventListener('click', () => {
+    saveStepData();
+    if (currentStep > 1) {
+        currentStep--;
+        updateProgress();
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+});
+
+document.getElementById('submitBtn').addEventListener('click', async (e) => {
+    const submitBtn = document.getElementById('submitBtn');
+    const loadingOverlay = document.getElementById('loadingOverlay');
+
+    if (currentStep === 5) {
+        const agreementCheckbox = document.getElementById('agreementCheckbox');
+        const agreementBox = document.getElementById('agreementBox');
+        const agreementLabel = document.getElementById('agreementLabel');
+        const agreementError = document.getElementById('agreementError');
+
+        if (!agreementCheckbox || !agreementCheckbox.checked) {
+            e.preventDefault();
+            e.stopPropagation();
+            agreementBox.classList.add('error');
+            agreementLabel.classList.add('error');
+            agreementError.classList.add('show');
+            agreementBox.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            setTimeout(() => {
+                agreementBox.classList.remove('error');
+                agreementLabel.classList.remove('error');
+                agreementError.classList.remove('show');
+            }, 3000);
+            return false;
+        }
+
+        if (orderId) startLiqPayPayment(orderId);
+        else alert('Order ID не знайдено. Спочатку сформуйте документ.');
+        return;
+    }
+
+    submitBtn.disabled = true;
+    loadingOverlay.classList.add('active');
+
+    try {
+        const response = await fetch('/court-form/submit', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(formData)
+        });
+
+        const result = await response.json();
+
+        if (!result.success) throw new Error('Помилка при генерації документа');
+
+        currentPdfUrl = result.pdf_url;
+        orderId = result.order_id;
+        loadingOverlay.classList.remove('active');
+        currentStep = 5;
+        updateProgress();
+        document.getElementById('pdfFrame').src = result.pdf_url;
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+        submitBtn.disabled = false;
+
+    } catch (error) {
+        loadingOverlay.classList.remove('active');
+        alert('❌ ' + error.message);
+        submitBtn.disabled = false;
+    }
+});
+
+document.addEventListener('change', (e) => {
+    if (e.target.id === 'agreementCheckbox') {
+        const submitBtn = document.getElementById('submitBtn');
+        const agreementBox = document.getElementById('agreementBox');
+        const agreementLabel = document.getElementById('agreementLabel');
+        const agreementError = document.getElementById('agreementError');
+
+        if (e.target.checked) {
+            submitBtn.disabled = false;
+            submitBtn.style.background = 'var(--gold)';
+            submitBtn.style.color = 'var(--navy)';
+            submitBtn.style.cursor = 'pointer';
+            agreementBox.classList.remove('error');
+            agreementLabel.classList.remove('error');
+            agreementError.classList.remove('show');
+        } else {
+            submitBtn.disabled = true;
+            submitBtn.style.background = 'var(--light-gray)';
+            submitBtn.style.color = 'var(--gray)';
+            submitBtn.style.cursor = 'not-allowed';
+        }
+    }
+});
+
+updateProgress();
+</script>
+
+</body>
+</html>
