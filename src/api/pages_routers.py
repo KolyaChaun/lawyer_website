@@ -30,4 +30,3 @@ async def contract(request: Request):
 @router.get("/payment/success")
 async def payment_success(request: Request):
     return templates.TemplateResponse("payment_success.html", {"request": request})
-

@@ -1,3 +1,9 @@
 .env
 .idea/
 media/
+.DS_Store
+__pycache__/
+*.py[cod]
+dump.rdb
+celerybeat-schedule
+celerybeat-schedule.db

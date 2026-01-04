@@ -7,9 +7,8 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700;900&family=Manrope:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="{{ url_for('static', path='css/styles.css') }}">
-    <link rel="icon" href="{{ url_for('static', path='favicon.ico') }}?v=1" type="image/x-icon">
-    <link rel="shortcut icon" href="{{ url_for('static', path='favicon.ico') }}?v=1" type="image/x-icon">
+    <link rel="stylesheet" href="/static/css/styles.css">
+    <link rel="icon" href="/static/favicon.ico?v=1">
     <style>
         body {
             padding-top: 80px;
@@ -147,7 +146,10 @@
 <body>
     <nav>
         <div class="nav-container">
-            <a href="/" class="logo">Адвокатський<span>Запит</span></a>
+            <a href="/" class="logo">
+                <img src="/static/logo-shield.png" alt="Логотип" class="logo-icon">
+                Адвокатський <span>Запит</span>
+            </a>
             <ul class="nav-links">
                 <li><a href="/">Головна</a></li>
                 <li><a href="/form">Подати запит</a></li>

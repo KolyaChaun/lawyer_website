@@ -7,9 +7,8 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700;900&family=Manrope:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="{{ url_for('static', path='css/styles.css') }}">
-    <link rel="icon" href="{{ url_for('static', path='favicon.ico') }}?v=1" type="image/x-icon">
-    <link rel="shortcut icon" href="{{ url_for('static', path='favicon.ico') }}?v=1" type="image/x-icon">
+    <link rel="stylesheet" href="/static/css/styles.css">
+    <link rel="icon" href="/static/favicon.ico?v=1">
     <style>
         .progress-bar {
             display: flex;
@@ -461,7 +460,7 @@
     </style>
 </head>
 <body>
-    <!-- Loading Overlay -->
+
     <div class="loading-overlay" id="loadingOverlay">
         <div class="loading-content">
             <div class="loading-spinner"></div>
@@ -472,7 +471,10 @@
 
     <nav>
         <div class="nav-container">
-            <a href="/" class="logo">Адвокатський<span>Запит</span></a>
+            <a href="/" class="logo">
+                <img src="/static/logo-shield.png" alt="Логотип" class="logo-icon">
+                Адвокатський <span>Запит</span>
+            </a>
             <ul class="nav-links">
                 <li><a href="/">Головна</a></li>
                 <li><a href="/form">Подати запит</a></li>
@@ -506,7 +508,6 @@
             </div>
         </div>
 
-        <!-- Крок 1: Орган -->
         <div class="step-content active" data-step="1">
             <h2 class="step-title">Орган або юридична особа</h2>
 
@@ -536,7 +537,6 @@
             </div>
         </div>
 
-        <!-- Крок 2: Заявник -->
         <div class="step-content" data-step="2">
             <h2 class="step-title">Клієнт</h2>
 
@@ -574,7 +574,6 @@
             </div>
         </div>
 
-        <!-- Крок 3: Текст заяви -->
         <div class="step-content" data-step="3">
             <h2 class="step-title">Текст запиту</h2>
 
@@ -593,7 +592,6 @@
             </div>
         </div>
 
-        <!-- Крок 4: Перевірка -->
         <div class="step-content" data-step="4">
             <h2 class="step-title">Перегляд та підтвердження</h2>
 
@@ -660,7 +658,6 @@
             </div>
         </div>
 
-        <!-- Крок 5: PDF Preview -->
         <div class="step-content" data-step="5">
             <div class="pdf-preview-container" id="pdfPreview">
                 <div class="success-badge">
@@ -681,7 +678,6 @@
                     <iframe class="pdf-frame" id="pdfFrame"></iframe>
                 </div>
 
-                <!-- Agreement Section -->
                 <div class="agreement-section">
                     <div class="agreement-box" id="agreementBox">
                         <label class="agreement-checkbox" id="agreementLabel">
@@ -696,7 +692,6 @@
             </div>
         </div>
 
-        <!-- Кнопки навігації -->
         <div class="button-group">
             <button class="submit-button" id="prevBtn" style="display: none; background: var(--light-gray); color: var(--navy);">ПОВЕРНУТИСЬ</button>
             <button class="submit-button" id="nextBtn">НАСТУПНИЙ КРОК</button>

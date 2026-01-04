@@ -5,7 +5,7 @@ from docx import Document
 from docx.enum.text import WD_PARAGRAPH_ALIGNMENT
 from docx.shared import Cm, Pt
 
-MEDIA_DIR = Path("media/documents")
+MEDIA_DIR = Path("media/temp")
 MEDIA_DIR.mkdir(parents=True, exist_ok=True)
 
 

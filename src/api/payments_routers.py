@@ -1,6 +1,8 @@
 import base64
 import hashlib
 import json
+import os
+from pathlib import Path
 
 from fastapi import APIRouter, HTTPException, Request
 from fastapi.responses import HTMLResponse
@@ -55,9 +57,21 @@ async def liqpay_callback(request: Request):
     if payment_data.get("status") in ("success", "sandbox"):
         order = TEMP_ORDERS.pop(payment_data["order_id"], None)
         if order:
+
+            docx_path = Path(order["docx_path"])
+            pdf_path = docx_path.with_suffix(".pdf")
+
             await send_telegram_message_docx(
                 docx_path=order["docx_path"],
                 caption="Адвокатський запит",
             )
+
+            if docx_path.exists():
+                os.remove(docx_path)
+                print(f"[PAYMENT CLEAN] Deleted {docx_path.name}")
+
+            if pdf_path.exists():
+                os.remove(pdf_path)
+                print(f"[PAYMENT CLEAN] Deleted {pdf_path.name}")
 
     return {"status": "ok"}

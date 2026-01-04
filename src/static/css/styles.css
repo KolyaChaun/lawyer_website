@@ -69,6 +69,19 @@ nav {
 .logo span {
     color: var(--gold);
 }
+.logo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.logo-icon {
+    width: 48px;
+    height: 48px;
+    object-fit: contain;
+    flex-shrink: 0;
+}
+
 
 .nav-links {
     display: flex;

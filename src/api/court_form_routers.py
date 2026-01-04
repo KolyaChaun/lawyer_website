@@ -40,7 +40,7 @@ async def submit_court_form(request: Request):
 
         return {
             "success": True,
-            "pdf_url": f"/media/documents/{pdf_path.name}",
+            "pdf_url": f"/media/temp/{pdf_path.name}",
             "order_id": order_id,
         }
 

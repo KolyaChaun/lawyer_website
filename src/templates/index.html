@@ -7,20 +7,18 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700;900&family=Manrope:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="{{ url_for('static', path='css/styles.css') }}">
-    <link rel="icon" href="{{ url_for('static', path='favicon.ico') }}?v=1" type="image/x-icon">
-    <link rel="shortcut icon" href="{{ url_for('static', path='favicon.ico') }}?v=1" type="image/x-icon">
+    <link rel="stylesheet" href="/static/css/styles.css">
+    <link rel="icon" href="/static/favicon.ico?v=1">
     <style>
-        /* Secondary Button (Замовити консультацію) - Exact same as cta-button, just narrower */
         .cta-secondary {
             display: inline-block;
-            padding: 1.2rem 2rem;  /* Less horizontal padding to make it narrower */
+            padding: 1.2rem 2rem;
             background: var(--gold);
             color: var(--navy);
             text-decoration: none;
             font-weight: 700;
             font-size: 1.1rem;
-            border-radius: 50px;  /* Same rounded style as cta-button */
+            border-radius: 50px;
             transition: all 0.3s ease;
             box-shadow: 0 10px 30px rgba(212, 175, 55, 0.3);
             margin-top: 1rem;
@@ -34,10 +32,12 @@
     </style>
 </head>
 <body>
-    <!-- Navigation -->
     <nav>
         <div class="nav-container">
-            <a href="/" class="logo">Адвокатський<span>Запит</span></a>
+            <a href="/" class="logo">
+                <img src="/static/logo-shield.png" alt="Логотип" class="logo-icon">
+                Адвокатський <span>Запит</span>
+            </a>
             <ul class="nav-links">
                 <li><a href="/">Головна</a></li>
                 <li><a href="/form">Подати запит</a></li>
@@ -46,7 +46,6 @@
         </div>
     </nav>
 
-    <!-- Hero Section -->
     <section class="hero">
         <div class="hero-content">
             <div class="hero-text">
@@ -73,7 +72,6 @@
         </div>
     </section>
 
-    <!-- Services Section -->
     <section class="services">
         <div class="section-title">
             <h2>Наші Послуги</h2>
@@ -113,7 +111,6 @@
         </div>
     </section>
 
-    <!-- How it Works -->
     <section class="how-it-works">
         <div class="steps-container">
             <div class="section-title">
@@ -145,7 +142,6 @@
         </div>
     </section>
 
-    <!-- Footer -->
     <footer>
     <div class="footer-content">
         <div class="footer-logo">Адвокатський<span>Запит</span></div>
