@@ -35,8 +35,8 @@ def generate_advocate_request_doc(form_data: dict) -> str:
         "свідоцтво про право на зайняття адвокатською",
         "діяльністю № 001971 від 06.05.2022, видане",
         "Радою адвокатів Миколаївської області",
-        "номер телефону – 0632258425",
-        "e-mail: rudikmark01@gmail.com",
+        "номер телефону: +380972246754",
+        "e-mail: m.rudyk.advokat@gmail.com",
         "адреса для листування: 65016, м. Одеса, вул. Баштанна, 2",
         "",
         "Діє в інтересах:",
@@ -165,7 +165,7 @@ def generate_advocate_request_doc(form_data: dict) -> str:
         run_num2 = p_item2.add_run("2. ")
         run_num2.bold = True
         run_text2 = p_item2.add_run(
-            "Відповідь на адвокатський запит, копії документів та інформацію прошу надіслати на мою електронну пошту: rudikmark01@gmail.com."
+            "Відповідь на адвокатський запит, копії документів та інформацію прошу надіслати на мою електронну пошту: m.rudyk.advokat@gmail.com."
         )
         p_item2.paragraph_format.first_line_indent = Cm(0.5)
         p_item2.paragraph_format.space_before = Pt(0)

@@ -213,8 +213,16 @@
         }
 
         @media (max-width: 768px) {
+            .success-page {
+                padding-top: 100px;
+            }
+
             .success-title {
                 font-size: 2rem;
+            }
+
+            .success-subtitle {
+                font-size: 1rem;
             }
 
             .success-icon {
@@ -226,6 +234,19 @@
                 font-size: 3rem;
             }
 
+            .next-steps {
+                padding: 1.5rem;
+            }
+
+            .next-steps-title {
+                font-size: 1.1rem;
+            }
+
+            .next-steps-list li {
+                font-size: 0.95rem;
+                padding-left: 2rem;
+            }
+
             .action-buttons {
                 flex-direction: column;
             }
@@ -233,6 +254,16 @@
             .btn {
                 width: 100%;
                 justify-content: center;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .success-title {
+                font-size: 1.7rem;
+            }
+
+            .success-subtitle {
+                font-size: 0.95rem;
             }
         }
     </style>
@@ -249,8 +280,15 @@
                 <li><a href="/form">Подати запит</a></li>
                 <li><a href="/contact">Контакти</a></li>
             </ul>
+            <button class="burger-menu" aria-label="Меню">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
         </div>
     </nav>
+
+    <div class="menu-overlay"></div>
 
     <div class="success-page">
         <div class="success-container">
@@ -293,14 +331,47 @@
             <p style="margin-top: 0.5rem;">
                 м. Одеса |
                 <a href="tel:+380972246754" style="color: inherit; text-decoration: none;">+380 (97) 224-67-54</a> |
-                <a href="mailto:Nasaraya98@gmail.com" style="color: inherit; text-decoration: none;">Nasaraya98@gmail.com</a> |
+                <a href="mailto:m.rudyk.advokat@gmail.com" style="color: inherit; text-decoration: none;">m.rudyk.advokat@gmail.com</a> |
                 <a href="https://t.me/nasaraya13" target="_blank" style="color: inherit; text-decoration: none;">📱 Telegram</a>
             </p>
         </div>
     </div>
 </footer>
 
-    <script>
+<script>
+        // Burger menu functionality
+        const burgerMenu = document.querySelector('.burger-menu');
+        const navLinks = document.querySelector('.nav-links');
+        const menuOverlay = document.querySelector('.menu-overlay');
+        const body = document.body;
+
+        function toggleMenu() {
+            burgerMenu.classList.toggle('active');
+            navLinks.classList.toggle('active');
+            menuOverlay.classList.toggle('active');
+            body.style.overflow = navLinks.classList.contains('active') ? 'hidden' : '';
+        }
+
+        burgerMenu.addEventListener('click', toggleMenu);
+        menuOverlay.addEventListener('click', toggleMenu);
+
+        // Close menu when clicking on a link
+        const navItems = navLinks.querySelectorAll('a');
+        navItems.forEach(item => {
+            item.addEventListener('click', () => {
+                if (navLinks.classList.contains('active')) {
+                    toggleMenu();
+                }
+            });
+        });
+
+        // Close menu on window resize
+        window.addEventListener('resize', () => {
+            if (window.innerWidth > 968 && navLinks.classList.contains('active')) {
+                toggleMenu();
+            }
+        });
+
         window.addEventListener('load', () => {
             console.log('Payment successful!');
         });

@@ -138,7 +138,35 @@
             }
 
             .contract-title {
-                font-size: 1.6rem;
+                font-size: 1.8rem;
+            }
+
+            .contract-content h2 {
+                font-size: 1.2rem;
+            }
+
+            .contract-content h3 {
+                font-size: 1rem;
+            }
+
+            .contract-content p {
+                font-size: 0.95rem;
+            }
+
+            .intro-text,
+            .highlight-box,
+            .company-info {
+                padding: 1.2rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .contract-title {
+                font-size: 1.5rem;
+            }
+
+            .contract-content h2 {
+                font-size: 1.1rem;
             }
         }
     </style>
@@ -155,23 +183,27 @@
                 <li><a href="/form">Подати запит</a></li>
                 <li><a href="/contact">Контакти</a></li>
             </ul>
+            <button class="burger-menu" aria-label="Меню">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
         </div>
     </nav>
 
+    <div class="menu-overlay"></div>
+
     <div class="contract-page">
         <div class="contract-header">
-            <h1 class="contract-title">Публічний договір (оферта) на замовлення і надання правової допомоги</h1>
+            <h1 class="contract-title">Публічний договір про надання правової допомоги</h1>
+            <p class="contract-subtitle">Редакція від 01.01.2026</p>
         </div>
 
         <div class="contract-content">
             <div class="intro-text">
-                <p>Цей договір є офіційною та публічною пропозицією адвоката укласти договір про надання правової допомоги, відомості про яку розміщені на сайті www.absl.org.ua.</p>
-
-                <p>Даний договір є публічним, тобто відповідно до статті 633 Цивільного кодексу України, його умови є однаковими для всіх покупців незалежно від їх статусу (фізична особа, юридична особа, фізична особа-підприємець) без надання переваги одному покупцю перед іншим.</p>
-
-                <p>Шляхом укладення цього Договору покупець в повному обсязі приймає умови та порядок оформлення замовлення, оплати та надання правової допомоги, повернення проведеної оплати та відмови від правової допомоги, відповідальності за недобросовісне замовлення та усі інші умови договору.</p>
-
-                <p><strong>Договір вважається укладеним з моменту звернення Клієнта до адвоката за допомогою телефону, електронною поштою або формою зворотного зв'язку, що розміщена на сайті.</strong></p>
+                <p>Цей публічний договір є офіційною пропозицією (публічною офертою) та містить усі суттєві умови надання правової допомоги.</p>
+                <p>Згідно зі статтею 633 Цивільного кодексу України, в разі прийняття викладених нижче умов фізична або юридична особа, яка здійснює акцепт оферти, стає Клієнтом (відповідно до положень викладених нижче).</p>
+                <p>Акцептом є повне і беззастережне прийняття Клієнтом умов цього Договору.</p>
             </div>
 
             <h2>1. ВИЗНАЧЕННЯ ТЕРМІНІВ</h2>
@@ -211,11 +243,9 @@
 
             <p><strong>3.5.</strong> Клієнт несе відповідальність за достовірність наданої інформації при оформленні Замовлення.</p>
 
-            <div class="highlight-box">
-                <p><strong>3.6.</strong> Укладаючи Договір, тобто акцептуючи умови даної пропозиції (запропоновані умови замовлення та отримання правової допомоги), шляхом оформлення Замовлення, Клієнт підтверджує наступне:</p>
-                <p><strong>а)</strong> Клієнт цілком і повністю ознайомлений, і згоден з умовами цієї пропозиції (оферти);</p>
-                <p><strong>б)</strong> він дає дозвіл на збір, обробку та передачу персональних даних, дозвіл на обробку персональних даних діє протягом усього терміну дії Договору, а також протягом необмеженого терміну після закінчення його дії.</p>
-            </div>
+            <p><strong>3.6.</strong> Укладаючи Договір, тобто акцептуючи умови даної пропозиції (запропоновані умови замовлення та отримання правової допомоги), шляхом оформлення Замовлення, Клієнт підтверджує наступне:</p>
+            <p><strong>а)</strong> Клієнт цілком і повністю ознайомлений, і згоден з умовами цієї пропозиції (оферти);</p>
+            <p><strong>б)</strong> він дає дозвіл на збір, обробку та передачу персональних даних, дозвіл на обробку персональних даних діє протягом усього терміну дії Договору, а також протягом необмеженого терміну після закінчення його дії.</p>
 
             <h2>4. ГОНОРАР АДВОКАТА</h2>
 
@@ -285,6 +315,8 @@
                 <p><strong>Email:</strong> Nasaraya98@gmail.com</p>
                 <p><strong>Телефон:</strong> +380 (97) 224-67-54</p>
             </div>
+
+            <a href="/" class="back-button">← Повернутися на головну</a>
         </div>
     </div>
 
@@ -303,5 +335,40 @@
             </div>
         </div>
     </footer>
+
+    <script>
+        // Burger menu functionality
+        const burgerMenu = document.querySelector('.burger-menu');
+        const navLinks = document.querySelector('.nav-links');
+        const menuOverlay = document.querySelector('.menu-overlay');
+        const body = document.body;
+
+        function toggleMenu() {
+            burgerMenu.classList.toggle('active');
+            navLinks.classList.toggle('active');
+            menuOverlay.classList.toggle('active');
+            body.style.overflow = navLinks.classList.contains('active') ? 'hidden' : '';
+        }
+
+        burgerMenu.addEventListener('click', toggleMenu);
+        menuOverlay.addEventListener('click', toggleMenu);
+
+        // Close menu when clicking on a link
+        const navItems = navLinks.querySelectorAll('a');
+        navItems.forEach(item => {
+            item.addEventListener('click', () => {
+                if (navLinks.classList.contains('active')) {
+                    toggleMenu();
+                }
+            });
+        });
+
+        // Close menu on window resize
+        window.addEventListener('resize', () => {
+            if (window.innerWidth > 968 && navLinks.classList.contains('active')) {
+                toggleMenu();
+            }
+        });
+    </script>
 </body>
 </html>
