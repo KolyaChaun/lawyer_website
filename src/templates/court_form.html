@@ -1015,30 +1015,22 @@ document.getElementById('submitBtn').addEventListener('click', async (e) => {
     const loadingOverlay = document.getElementById('loadingOverlay');
 
     if (currentStep === 5) {
-        const agreementCheckbox = document.getElementById('agreementCheckbox');
-        const agreementBox = document.getElementById('agreementBox');
-        const agreementLabel = document.getElementById('agreementLabel');
-        const agreementError = document.getElementById('agreementError');
+    const agreementCheckbox = document.getElementById('agreementCheckbox');
+    const agreementBox = document.getElementById('agreementBox');
+    const agreementError = document.getElementById('agreementError');
 
-        if (!agreementCheckbox || !agreementCheckbox.checked) {
-            e.preventDefault();
-            e.stopPropagation();
-            agreementBox.classList.add('error');
-            agreementLabel.classList.add('error');
-            agreementError.classList.add('show');
-            agreementBox.scrollIntoView({ behavior: 'smooth', block: 'center' });
-            setTimeout(() => {
-                agreementBox.classList.remove('error');
-                agreementLabel.classList.remove('error');
-                agreementError.classList.remove('show');
-            }, 3000);
-            return false;
-        }
-
-        if (orderId) startLiqPayPayment(orderId);
-        else alert('Order ID не знайдено. Спочатку сформуйте документ.');
-        return;
+    if (!agreementCheckbox || !agreementCheckbox.checked) {
+        e.preventDefault();
+        agreementBox.classList.add('error');
+        agreementError.classList.add('show');
+        agreementBox.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        return false;
     }
+
+    if (orderId) startLiqPayPayment(orderId);
+    else alert('Order ID не знайдено. Спочатку сформуйте документ.');
+    return;
+}
 
     submitBtn.disabled = true;
     loadingOverlay.classList.add('active');
@@ -1049,17 +1041,35 @@ document.getElementById('submitBtn').addEventListener('click', async (e) => {
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(formData)
         });
-
         const result = await response.json();
 
         if (!result.success) throw new Error('Помилка при генерації документа');
 
         currentPdfUrl = result.pdf_url;
-        orderId = result.order_id;
+        let docxPath = result.docx_path;
+
+        if (!docxPath) throw new Error('docx_path не знайдено на сервері');
+
+        docxPath = docxPath.replace("/app", "");
+
+        const orderResponse = await fetch('/orders/create', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ docx_path: docxPath, order_id: orderId }) // <-- передаем order_id
+        });
+
+        if (!orderResponse.ok) {
+            const errData = await orderResponse.json().catch(() => ({}));
+            throw new Error(errData.detail || 'Помилка при створенні ордеру');
+        }
+
+        const orderData = await orderResponse.json();
+        orderId = orderData.order_id;
+
         loadingOverlay.classList.remove('active');
         currentStep = 5;
         updateProgress();
-        document.getElementById('pdfFrame').src = result.pdf_url;
+        document.getElementById('pdfFrame').src = currentPdfUrl;
         window.scrollTo({ top: 0, behavior: 'smooth' });
         submitBtn.disabled = false;
 

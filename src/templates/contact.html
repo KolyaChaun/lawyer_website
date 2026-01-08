@@ -199,6 +199,7 @@ document.addEventListener('DOMContentLoaded', () => {
     phoneInput.addEventListener('input', onPhoneInput);
     phoneInput.addEventListener('focus', onPhoneFocus);
     phoneInput.addEventListener('blur', onPhoneBlur);
+    phoneInput.addEventListener('keydown', onPhoneKeydown);
 
     function showToast(message) {
         const toast = document.getElementById('toast');
@@ -230,44 +231,150 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function onPhoneInput(e) {
-        const input = e.target;
+    const input = e.target;
 
-        if (!input.value.startsWith(PHONE_PREFIX)) {
-            input.value = PHONE_PREFIX;
-        }
+    let numbers = input.value.replace(/\D/g, '');
 
-        let numbers = input.value.replace(/\D/g, '');
-
-        if (!numbers.startsWith('38')) {
-            numbers = '38' + numbers.replace(/^38/, '');
-        }
-
-        numbers = numbers.substring(0, 12);
-
-        let formatted = PHONE_PREFIX;
-
-        if (numbers.length > 2) {
-            formatted += numbers.substring(2, 5);
-        }
-        if (numbers.length >= 5) {
-            formatted += ') ' + numbers.substring(5, 8);
-        }
-        if (numbers.length >= 8) {
-            formatted += '-' + numbers.substring(8, 10);
-        }
-        if (numbers.length >= 10) {
-            formatted += '-' + numbers.substring(10, 12);
-        }
-
-        input.value = formatted;
-        setCaret(input, input.value.length);
+    if (!numbers.startsWith('38')) {
+        numbers = '38';
     }
+
+    numbers = numbers.substring(0, 12);
+
+    let formatted = '+38 (';
+
+    if (numbers.length > 2) {
+        formatted += numbers.substring(2, 5);
+    }
+    if (numbers.length >= 5) {
+        formatted += ') ' + numbers.substring(5, 8);
+    }
+    if (numbers.length >= 8) {
+        formatted += '-' + numbers.substring(8, 10);
+    }
+    if (numbers.length >= 10) {
+        formatted += '-' + numbers.substring(10, 12);
+    }
+
+    const oldLen = input.value.length;
+    const newLen = formatted.length;
+    const cursorPos = input.selectionStart;
+
+    input.value = formatted;
+
+    if (newLen < oldLen) {
+        setCaret(input, cursorPos);
+    } else {
+        setCaret(input, formatted.length);
+    }
+}
 
     function onPhoneBlur(e) {
         if (e.target.value === PHONE_PREFIX) {
             e.target.value = '';
         }
     }
+
+    function onPhoneKeydown(e) {
+    const input = e.target;
+    const cursorPos = input.selectionStart;
+    const value = input.value;
+
+    if (e.key === 'Backspace') {
+        if (cursorPos <= PHONE_PREFIX.length) {
+            e.preventDefault();
+            return;
+        }
+
+        if (cursorPos > 0 && /[\s\-\)]/.test(value[cursorPos - 1])) {
+            e.preventDefault();
+
+            let newPos = cursorPos - 1;
+            while (newPos > PHONE_PREFIX.length && !/\d/.test(value[newPos - 1])) {
+                newPos--;
+            }
+
+            if (newPos > PHONE_PREFIX.length) {
+                let numbers = value.replace(/\D/g, '');
+                let digitIndex = 0;
+                let targetDigitPos = 0;
+
+                for (let i = 0; i < newPos; i++) {
+                    if (/\d/.test(value[i])) {
+                        digitIndex++;
+                    }
+                }
+
+                numbers = numbers.slice(0, digitIndex - 1) + numbers.slice(digitIndex);
+
+                if (!numbers.startsWith('38')) numbers = '38';
+                numbers = numbers.substring(0, 12);
+
+                let formatted = '+38 (';
+                if (numbers.length > 2) formatted += numbers.substring(2, 5);
+                if (numbers.length >= 5) formatted += ') ' + numbers.substring(5, 8);
+                if (numbers.length >= 8) formatted += '-' + numbers.substring(8, 10);
+                if (numbers.length >= 10) formatted += '-' + numbers.substring(10, 12);
+
+                input.value = formatted;
+
+                let newCursorPos = PHONE_PREFIX.length;
+                let digitsCount = 0;
+                for (let i = PHONE_PREFIX.length; i < formatted.length; i++) {
+                    if (/\d/.test(formatted[i])) {
+                        digitsCount++;
+                        if (digitsCount === digitIndex - 1) {
+                            newCursorPos = i + 1;
+                            break;
+                        }
+                    }
+                }
+                if (digitsCount < digitIndex - 1) newCursorPos = formatted.length;
+
+                setCaret(input, newCursorPos);
+            }
+        }
+    } else if (e.key === 'Delete') {
+        if (cursorPos < PHONE_PREFIX.length) {
+            e.preventDefault();
+            return;
+        }
+
+        if (cursorPos < value.length && /[\s\-\(\)]/.test(value[cursorPos])) {
+            e.preventDefault();
+
+            let newPos = cursorPos;
+            while (newPos < value.length && !/\d/.test(value[newPos])) {
+                newPos++;
+            }
+
+            if (newPos < value.length) {
+                let numbers = value.replace(/\D/g, '');
+                let digitIndex = 0;
+
+                for (let i = 0; i < newPos; i++) {
+                    if (/\d/.test(value[i])) {
+                        digitIndex++;
+                    }
+                }
+
+                numbers = numbers.slice(0, digitIndex) + numbers.slice(digitIndex + 1);
+
+                if (!numbers.startsWith('38')) numbers = '38';
+                numbers = numbers.substring(0, 12);
+
+                let formatted = '+38 (';
+                if (numbers.length > 2) formatted += numbers.substring(2, 5);
+                if (numbers.length >= 5) formatted += ') ' + numbers.substring(5, 8);
+                if (numbers.length >= 8) formatted += '-' + numbers.substring(8, 10);
+                if (numbers.length >= 10) formatted += '-' + numbers.substring(10, 12);
+
+                input.value = formatted;
+                setCaret(input, cursorPos);
+            }
+        }
+    }
+}
 
     function setCaret(input, pos) {
         requestAnimationFrame(() => {
@@ -338,17 +445,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
     contactForm.querySelectorAll('input, textarea').forEach(input => {
         input.addEventListener('input', () => validateField(input));
-    });
-
-    phoneInput.addEventListener('keydown', (e) => {
-        const cursorPos = phoneInput.selectionStart;
-
-        if (
-            cursorPos <= PHONE_PREFIX.length &&
-            (e.key === 'Backspace' || e.key === 'Delete')
-        ) {
-            e.preventDefault();
-        }
     });
 
     // Scroll to form if hash is present

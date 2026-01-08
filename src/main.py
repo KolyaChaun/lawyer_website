@@ -2,7 +2,7 @@ from fastapi import FastAPI
 from fastapi.staticfiles import StaticFiles
 
 from src.api import (contact_routers, court_form_routers, pages_routers,
-                     payments_routers)
+                     payments_routers, order_routers)
 from src.core.config import BASE_DIR, PROJECT_DIR
 
 app = FastAPI()
@@ -25,3 +25,4 @@ app.include_router(pages_routers.router)
 app.include_router(contact_routers.router)
 app.include_router(court_form_routers.router)
 app.include_router(payments_routers.router)
+app.include_router(order_routers.router)

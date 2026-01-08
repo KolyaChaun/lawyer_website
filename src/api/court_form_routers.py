@@ -1,5 +1,4 @@
 import subprocess
-import uuid
 from pathlib import Path
 
 from fastapi import APIRouter, HTTPException, Request
@@ -7,8 +6,6 @@ from fastapi import APIRouter, HTTPException, Request
 from src.services.doc_generator import generate_advocate_request_doc
 
 router = APIRouter(prefix="/court-form", tags=["Court Form"])
-
-TEMP_ORDERS: dict[str, dict] = {}
 
 
 @router.post("/submit")
@@ -32,16 +29,10 @@ async def submit_court_form(request: Request):
             check=True,
         )
 
-        order_id = str(uuid.uuid4())
-        TEMP_ORDERS[order_id] = {
-            "docx_path": str(docx_path),
-            "form_data": form_data,
-        }
-
         return {
             "success": True,
             "pdf_url": f"/media/temp/{pdf_path.name}",
-            "order_id": order_id,
+            "docx_path": f"/media/temp/{docx_path.name}",
         }
 
     except Exception as e:

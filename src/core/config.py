@@ -12,3 +12,5 @@ LIQPAY_PUBLIC_KEY = os.getenv("LIQPAY_PUBLIC_KEY")
 LIQPAY_PRIVATE_KEY = os.getenv("LIQPAY_PRIVATE_KEY")
 
 SOFFICE_PATH = "/Applications/LibreOffice.app/Contents/MacOS/soffice"
+
+DATABASE_URL = os.getenv("DATABASE_URL")
