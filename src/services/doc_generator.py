@@ -148,30 +148,36 @@ def generate_advocate_request_doc(form_data: dict) -> str:
     all_paragraphs.append(proshu_p)
 
     documents_requested = form_data.get("documentsRequested", "").strip()
+
+    p_item1 = doc.add_paragraph()
+    run_num1 = p_item1.add_run("1. ")
+    run_num1.bold = True
+
     if documents_requested:
-        p_item1 = doc.add_paragraph()
-        run_num1 = p_item1.add_run("1. ")
-        run_num1.bold = True
         run_text1 = p_item1.add_run(
             f"Надати інформацію та відповідні підтверджуючі документи: {documents_requested}."
         )
-        p_item1.paragraph_format.first_line_indent = Cm(0.5)
-        p_item1.paragraph_format.space_before = Pt(0)
-        p_item1.paragraph_format.space_after = Pt(0)
-        p_item1.paragraph_format.line_spacing = 1
-        all_paragraphs.append(p_item1)
-
-        p_item2 = doc.add_paragraph()
-        run_num2 = p_item2.add_run("2. ")
-        run_num2.bold = True
-        run_text2 = p_item2.add_run(
-            "Відповідь на адвокатський запит, копії документів та інформацію прошу надіслати на мою електронну пошту: m.rudyk.advokat@gmail.com."
+    else:
+        run_text1 = p_item1.add_run(
+            "Надати інформацію та відповідні підтверджуючі документи: "
         )
-        p_item2.paragraph_format.first_line_indent = Cm(0.5)
-        p_item2.paragraph_format.space_before = Pt(0)
-        p_item2.paragraph_format.space_after = Pt(0)
-        p_item2.paragraph_format.line_spacing = 1
-        all_paragraphs.append(p_item2)
+    p_item1.paragraph_format.first_line_indent = Cm(0.5)
+    p_item1.paragraph_format.space_before = Pt(0)
+    p_item1.paragraph_format.space_after = Pt(0)
+    p_item1.paragraph_format.line_spacing = 1
+    all_paragraphs.append(p_item1)
+
+    p_item2 = doc.add_paragraph()
+    run_num2 = p_item2.add_run("2. ")
+    run_num2.bold = True
+    run_text2 = p_item2.add_run(
+        "Відповідь на адвокатський запит, копії документів та інформацію прошу надіслати на мою електронну пошту: m.rudyk.advokat@gmail.com."
+    )
+    p_item2.paragraph_format.first_line_indent = Cm(0.5)
+    p_item2.paragraph_format.space_before = Pt(0)
+    p_item2.paragraph_format.space_after = Pt(0)
+    p_item2.paragraph_format.line_spacing = 1
+    all_paragraphs.append(p_item2)
 
     # format
     for p in all_paragraphs:

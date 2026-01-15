@@ -4,7 +4,7 @@ import json
 import os
 from datetime import datetime
 
-from fastapi import APIRouter, HTTPException, Request, Depends
+from fastapi import APIRouter, Depends, HTTPException, Request
 from fastapi.responses import HTMLResponse
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -73,7 +73,9 @@ async def liqpay_callback(request: Request):
             raise HTTPException(status_code=400, detail="Missing data or signature")
 
         expected_signature = base64.b64encode(
-            hashlib.sha1((LIQPAY_PRIVATE_KEY + data + LIQPAY_PRIVATE_KEY).encode()).digest()
+            hashlib.sha1(
+                (LIQPAY_PRIVATE_KEY + data + LIQPAY_PRIVATE_KEY).encode()
+            ).digest()
         ).decode()
 
         if signature != expected_signature:
@@ -82,11 +84,15 @@ async def liqpay_callback(request: Request):
         payment_data = json.loads(base64.b64decode(data).decode())
         order_id = payment_data.get("order_id")
         if not order_id:
-            raise HTTPException(status_code=400, detail="Missing order_id in payment data")
+            raise HTTPException(
+                status_code=400, detail="Missing order_id in payment data"
+            )
 
         async with AsyncSessionLocal() as session:
             async with session.begin():
-                result = await session.execute(select(Order).where(Order.order_id == order_id))
+                result = await session.execute(
+                    select(Order).where(Order.order_id == order_id)
+                )
                 order = result.scalars().first()
 
                 if not order:
@@ -98,10 +104,11 @@ async def liqpay_callback(request: Request):
                     await session.flush()
 
         try:
-            absolute_path = os.path.join(os.getcwd(), "media/temp", os.path.basename(order.docx_path))
+            absolute_path = os.path.join(
+                os.getcwd(), "media/temp", os.path.basename(order.docx_path)
+            )
             await send_telegram_message_docx(
-                docx_path=absolute_path,
-                caption="Адвокатський запит"
+                docx_path=absolute_path, caption="Адвокатський запит"
             )
         except Exception as e:
             print(f"[TELEGRAM ERROR] {e}")

@@ -1,8 +1,8 @@
 from fastapi import FastAPI
 from fastapi.staticfiles import StaticFiles
 
-from src.api import (contact_routers, court_form_routers, pages_routers,
-                     payments_routers, order_routers)
+from src.api import (contact_routers, court_form_routers, order_routers,
+                     pages_routers, payments_routers)
 from src.core.config import BASE_DIR, PROJECT_DIR
 
 app = FastAPI()
